@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "outDir": "build/ext-src",
+    "moduleResolution": "node",
+    "lib": ["es6", "dom", "esnext"],
+    "sourceMap": true,
+    "strict": true
+  },
+  "include": ["ext-src"]
+}

@@ -1,0 +1,27 @@
+.graphiql-container {
+  height: 100vh !important;
+  width: 100vw !important;
+}
+
+.execute-button-wrap,
+.variable-editor,
+.resultWrap {
+  display: none !important;
+}
+
+.graphiql-explorer-root .variable-editor-title {
+  display: none;
+}
+
+body.show-insertions .graphiql-explorer-root .variable-editor-title {
+  display: block !important;
+}
+
+.history-title-bar {
+  display: none;
+}
+
+.history-contents {
+  top: 0 !important;
+  border-top: none !important;
+}
