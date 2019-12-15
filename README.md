@@ -2,6 +2,8 @@
 
 Use GraphiQL + GraphiQL Explorer to build your GraphQL operations, right from inside of VSCode.
 
+![Demo](https://github.com/zth/vscode-graphiql-explorer/blob/master/images/vscode-graphiql-explorer.gif?raw=true)
+
 ## Features
 
 - Explore your schema and edit + insert GraphQL operations using GraphiQL Explorer conveniently right from VSCode.
