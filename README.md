@@ -25,6 +25,14 @@ If your schema is located somewhere other than the workspace root, please add an
 
 If you don't have a schema file, you can create one by running `npx get-graphql-schema http://url/to/your/graphql/endpoint > schema.graphql` in your project root.
 
+## Usage
+
+The extension adds 3 commands:
+
+1. `Edit operation`, which let you edit an operation in GraphiQL. Use this with the cursor set in a tag (or full `.graphql` file) containing a GraphQL operation.
+2. `Insert operation here`, which let you insert an operation into your source file via GraphiQL. Use this with the cursor set in an empty GraphQL tag, or in a `.graphql` file.
+3. `Explore schema with GraphiQL`, which opens GraphiQL and let you explore your schema, without inserting or editing anything.
+
 ## Contributing
 
 _Coming soon_.
