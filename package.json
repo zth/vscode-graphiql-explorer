@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/zth/vscode-graphiql-explorer"
   },
-  "publisher": "zth",
+  "publisher": "GabrielNordeborn",
   "activationEvents": [
     "onCommand:vscode-graphiql-explorer.edit",
     "onCommand:vscode-graphiql-explorer.show",
