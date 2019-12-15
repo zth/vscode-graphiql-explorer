@@ -16,11 +16,15 @@ Use GraphiQL + GraphiQL Explorer to build your GraphQL operations, right from in
 
 ## Setup
 
-`vscode-graphiql-explorer` needs a file with your introspected schema in it, either a `.json` or a `.graphql` file. It tries to find your schema file by looking in the workspace root for:
+`vscode-graphiql-explorer` needs your introspected schema, either in a `.json` or a `.graphql` file. It tries to find your schema by looking in the workspace root for:
 
-1. A `.graphqlconfig` file containing a `{ "schemaPath": "/path/to/schema.graphql" }`.
+1. A `.graphqlconfig` file containing `schemaPath` pointing to your schema, like `{ "schemaPath": "/path/to/schema.graphql" }`.
 2. `schema.graphql`, `schema.json` or `graphql_schema.json`.
 
-If your schema is located somewhere other than the workspace root, please add and configure a `.graphqlconfig` file pointing to the schema, as described above.
+If your schema is located somewhere other than the workspace root, please add and configure a `.graphqlconfig` file pointing to the schema as described above.
 
 If you don't have a schema file, you can create one by running `npx get-graphql-schema http://url/to/your/graphql/endpoint > schema.graphql` in your project root.
+
+## Contributing
+
+_Coming soon_.
