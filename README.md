@@ -1,6 +1,6 @@
 # vscode-graphiql-explorer
 
-Use GraphiQL + GraphiQL Explorer to build your GraphQL operations, right from inside of VSCode.
+Use [GraphiQL](https://github.com/graphql/graphiql) + [OneGraph's](https://www.onegraph.com/) [GraphiQL Explorer](https://github.com/OneGraph/graphiql-explorer) to build your GraphQL operations, right from inside of VSCode.
 
 ![Demo](https://github.com/zth/vscode-graphiql-explorer/blob/master/images/vscode-graphiql-explorer.gif?raw=true)
 
