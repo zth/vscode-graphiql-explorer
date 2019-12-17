@@ -27,11 +27,12 @@ If you don't have a schema file, you can create one by running `npx get-graphql-
 
 ## Usage
 
-The extension adds 3 commands:
+The extension adds 4 commands:
 
 1. `Edit operation`, which let you edit an operation in GraphiQL. Use this with the cursor set in a tag (or full `.graphql` file) containing a GraphQL operation.
 2. `Insert operation here`, which let you insert an operation into your source file via GraphiQL. Use this with the cursor set in an empty GraphQL tag, or in a `.graphql` file.
 3. `Explore schema with GraphiQL`, which opens GraphiQL and let you explore your schema, without inserting or editing anything.
+4. `Format current GraphQL block`, formats the current GraphQL block using Prettier. If you already use Prettier for formatting, this should already work automatically for most languages. But there are some (ReasonML for instance) that can't be formatted using Prettier, and this command can help there.
 
 ## Contributing
 
