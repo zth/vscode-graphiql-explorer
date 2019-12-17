@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphiql-explorer",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "engines": {
     "vscode": "^1.30.0"
   },
@@ -14,7 +14,8 @@
   "activationEvents": [
     "onCommand:vscode-graphiql-explorer.edit",
     "onCommand:vscode-graphiql-explorer.show",
-    "onCommand:vscode-graphiql-explorer.insert"
+    "onCommand:vscode-graphiql-explorer.insert",
+    "onCommand:vscode-graphiql-explorer.format"
   ],
   "categories": [
     "Other"
@@ -40,6 +41,11 @@
       {
         "command": "vscode-graphiql-explorer.insert",
         "title": "Insert operation here",
+        "category": "GraphQL"
+      },
+      {
+        "command": "vscode-graphiql-explorer.format",
+        "title": "Format current GraphQL block",
         "category": "GraphQL"
       }
     ],

@@ -1,5 +1,5 @@
-import prettier from "prettier/standalone";
-import parserGraphql from "prettier/parser-graphql";
+import * as prettier from "prettier/standalone";
+import * as parserGraphql from "prettier/parser-graphql";
 
 export function prettify(str: string): string {
   return (

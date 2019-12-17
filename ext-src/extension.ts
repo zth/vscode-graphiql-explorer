@@ -2,44 +2,18 @@ import * as path from "path";
 import * as fs from "fs";
 import * as vscode from "vscode";
 
-import { extractGraphQLSources } from "./findGraphQLSources";
 import { loadSchema } from "./loadSchema";
+import {
+  replaceTargetSource,
+  extractSelectedOperation
+} from "./extensionUtils";
+import { prettify, restoreOperationPadding } from "../src/utils";
 import {
   RawSchema,
   StartEditConfig,
   GraphQLSource,
   Command
 } from "./extensionTypes";
-
-export function extractSelectedOperation(
-  textEditor: vscode.TextEditor
-): GraphQLSource | null {
-  const sources = extractGraphQLSources(textEditor.document);
-
-  if (!sources || sources.length < 1) {
-    vscode.window.showErrorMessage("No GraphQL sources found in file.");
-    return null;
-  }
-
-  let targetSource: GraphQLSource | null = null;
-
-  if (sources[0].type === "FULL_DOCUMENT") {
-    targetSource = sources[0];
-  } else {
-    // A tag must be focused
-    const selection = textEditor.selection.active;
-
-    for (let i = 0; i <= sources.length - 1; i += 1) {
-      const t = sources[i];
-
-      if (t.type === "TAG" && selection.line >= t.start.line) {
-        targetSource = t;
-      }
-    }
-  }
-
-  return targetSource;
-}
 
 export function activate(context: vscode.ExtensionContext) {
   const loadSchemaAndLaunch = async (
@@ -158,6 +132,37 @@ export function activate(context: vscode.ExtensionContext) {
         },
         textEditor
       );
+    }),
+    vscode.commands.registerCommand("vscode-graphiql-explorer.format", () => {
+      const textEditor = vscode.window.activeTextEditor;
+
+      if (!textEditor) {
+        vscode.window.showErrorMessage("Missing active text editor.");
+        return;
+      }
+
+      const selectedOperation = extractSelectedOperation(textEditor);
+
+      if (selectedOperation) {
+        if (
+          selectedOperation.type === "TAG" &&
+          /^[\s]+$/g.test(selectedOperation.content)
+        ) {
+          vscode.window.showInformationMessage(
+            "Cannot format an empty code block."
+          );
+          return;
+        }
+
+        replaceTargetSource(
+          textEditor,
+          selectedOperation,
+          restoreOperationPadding(
+            prettify(selectedOperation.content),
+            selectedOperation.content
+          )
+        );
+      }
     })
   );
 }
@@ -212,18 +217,18 @@ class GraphiQLExplorerPanel {
 
     this._panel.webview.onDidReceiveMessage(
       message => {
-        let dispose = () => {
+        const dispose = () => {
           this._currentTextDocument = null;
           this.dispose();
         };
 
         switch (message.command) {
           case "insert": {
-            let position: { line: number; character: number } =
+            const position: { line: number; character: number } =
               message.position;
-            let content: string = message.content;
+            const content: string = message.content;
 
-            let textDocument = this._currentTextDocument;
+            const textDocument = this._currentTextDocument;
 
             if (textDocument) {
               vscode.window
@@ -244,45 +249,20 @@ class GraphiQLExplorerPanel {
             dispose();
             break;
           case "save": {
-            let targetSource: GraphQLSource = message.targetSource;
-            let newContent: string = message.newContent;
+            const newContent: string = message.newContent;
+            const targetSource: GraphQLSource = message.targetSource;
 
-            let textDocument = this._currentTextDocument;
+            const textDocument = this._currentTextDocument;
 
             if (textDocument) {
               vscode.window
                 .showTextDocument(textDocument)
                 .then((textEditor: vscode.TextEditor) => {
-                  textEditor.edit((editBuilder: vscode.TextEditorEdit) => {
-                    if (targetSource.type === "TAG") {
-                      editBuilder.replace(
-                        new vscode.Range(
-                          new vscode.Position(
-                            targetSource.start.line,
-                            targetSource.start.character
-                          ),
-                          new vscode.Position(
-                            targetSource.end.line,
-                            targetSource.end.character
-                          )
-                        ),
-                        newContent
-                      );
-                    } else if (
-                      targetSource.type === "FULL_DOCUMENT" &&
-                      textDocument
-                    ) {
-                      editBuilder.replace(
-                        new vscode.Range(
-                          new vscode.Position(0, 0),
-                          new vscode.Position(textDocument.lineCount + 1, 0)
-                        ),
-                        newContent
-                      );
-                    }
-
-                    dispose();
-                  });
+                  replaceTargetSource(
+                    textEditor,
+                    targetSource,
+                    newContent
+                  ).then(dispose);
                 });
             } else {
               vscode.window.showErrorMessage("Missing target TextDocument.");
