@@ -317,6 +317,7 @@ function App() {
             query={state.currentOperation}
             onEdit={onEditExplorer}
             explorerIsOpen={true}
+            showAttribution={true}
           />
           <GraphiQL
             schema={state.schema}
