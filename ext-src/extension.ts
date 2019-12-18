@@ -58,7 +58,11 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const selectedOperation = extractSelectedOperation(textEditor);
+      const selectedOperation = extractSelectedOperation(
+        textEditor.document.languageId,
+        textEditor.document.getText(),
+        textEditor.selection.active
+      );
 
       if (selectedOperation) {
         if (
@@ -88,7 +92,11 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const selectedOperation = extractSelectedOperation(textEditor);
+      const selectedOperation = extractSelectedOperation(
+        textEditor.document.languageId,
+        textEditor.document.getText(),
+        textEditor.selection.active
+      );
 
       if (selectedOperation && selectedOperation.type === "TAG") {
         vscode.window.showInformationMessage(
@@ -107,7 +115,11 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const selectedOperation = extractSelectedOperation(textEditor);
+      const selectedOperation = extractSelectedOperation(
+        textEditor.document.languageId,
+        textEditor.document.getText(),
+        textEditor.selection.active
+      );
 
       if (
         selectedOperation &&
@@ -141,7 +153,11 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const selectedOperation = extractSelectedOperation(textEditor);
+      const selectedOperation = extractSelectedOperation(
+        textEditor.document.languageId,
+        textEditor.document.getText(),
+        textEditor.selection.active
+      );
 
       if (selectedOperation) {
         if (

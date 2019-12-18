@@ -54,14 +54,15 @@ const extractGraphQLSourceFromReason = makeExtractTagsFromSource(
 );
 
 export function extractGraphQLSources(
-  document: TextDocument
+  languageId: string,
+  document: string
 ): GraphQLSource[] | null {
-  switch (document.languageId) {
+  switch (languageId) {
     case "graphql":
       return [
         {
           type: "FULL_DOCUMENT",
-          content: document.getText()
+          content: document
         }
       ];
     case "javascript":
@@ -69,9 +70,9 @@ export function extractGraphQLSources(
     case "typescript":
     case "typescriptreact":
     case "vue":
-      return extractGraphQLSourceFromJs(document.getText());
+      return extractGraphQLSourceFromJs(document);
     case "reason":
-      return extractGraphQLSourceFromReason(document.getText());
+      return extractGraphQLSourceFromReason(document);
     default:
       return null;
   }

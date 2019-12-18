@@ -3,12 +3,16 @@ import { GraphQLSource } from "./extensionTypes";
 import { extractGraphQLSources } from "./findGraphQLSources";
 
 export function extractSelectedOperation(
-  textEditor: vscode.TextEditor
+  languageId: string,
+  document: string,
+  selection: {
+    line: number;
+    character: number;
+  }
 ): GraphQLSource | null {
-  const sources = extractGraphQLSources(textEditor.document);
+  const sources = extractGraphQLSources(languageId, document);
 
   if (!sources || sources.length < 1) {
-    vscode.window.showErrorMessage("No GraphQL sources found in file.");
     return null;
   }
 
@@ -18,12 +22,14 @@ export function extractSelectedOperation(
     targetSource = sources[0];
   } else {
     // A tag must be focused
-    const selection = textEditor.selection.active;
-
     for (let i = 0; i <= sources.length - 1; i += 1) {
       const t = sources[i];
 
-      if (t.type === "TAG" && selection.line >= t.start.line) {
+      if (
+        t.type === "TAG" &&
+        selection.line >= t.start.line &&
+        selection.line <= t.end.line
+      ) {
         targetSource = t;
       }
     }

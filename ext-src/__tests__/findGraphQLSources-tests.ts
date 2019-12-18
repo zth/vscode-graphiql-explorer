@@ -6,13 +6,7 @@ import * as vscode from "vscode";
  */
 let makeSourceTester = (source: string, expectedResult: any) => (
   languageId: string
-) =>
-  expect(
-    extractGraphQLSources({
-      getText: () => source,
-      languageId
-    } as vscode.TextDocument)
-  ).toEqual(expectedResult);
+) => expect(extractGraphQLSources(languageId, source)).toEqual(expectedResult);
 
 /**
  * JS, TS and Vue
