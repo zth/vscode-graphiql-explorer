@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphiql-explorer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "engines": {
     "vscode": "^1.30.0"
   },
@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "graphiql": "^0.17.5",
-    "graphiql-explorer": "0.4.6",
+    "graphiql-explorer": "0.5.1",
     "graphql": "^14.5.8",
     "graphql-config": "2.2.1",
     "locate-character": "^2.0.5",
