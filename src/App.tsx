@@ -8,6 +8,7 @@ import GraphiQLExplorer from "graphiql-explorer";
 import StorageAPI from "graphiql/dist/utility/StorageAPI";
 import "graphiql/graphiql.css";
 import "./App.css";
+import "graphql-voyager/dist/voyager.css";
 import { Voyager } from "graphql-voyager";
 
 import { MessageHandler } from "./MessageHandler";
@@ -24,7 +25,8 @@ import {
   buildSchema,
   GraphQLSchema,
   buildClientSchema,
-  IntrospectionQuery
+  IntrospectionQuery,
+  introspectionFromSchema
 } from "graphql";
 import prettier from "prettier/standalone";
 import parserGraphql from "prettier/parser-graphql";
@@ -370,7 +372,11 @@ function App() {
               </GraphiQL>
             </>
           ) : state.show === "voyager" ? (
-            <Voyager introspection={state.schema} />
+            <Voyager
+              introspection={() =>
+                Promise.resolve({ data: introspectionFromSchema(state.schema) })
+              }
+            />
           ) : null}
         </div>
       ) : (

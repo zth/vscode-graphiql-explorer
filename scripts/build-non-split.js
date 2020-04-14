@@ -5,6 +5,8 @@
 
 const rewire = require("rewire");
 const defaults = rewire("react-scripts/scripts/build.js");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 let config = defaults.__get__("config");
 
 config.optimization.splitChunks = {
@@ -14,3 +16,12 @@ config.optimization.splitChunks = {
 };
 
 config.optimization.runtimeChunk = false;
+
+config.plugins.push(
+  new CopyWebpackPlugin([
+    {
+      from: "./node_modules/graphql-voyager/dist/voyager.worker.js",
+      to: "static/js"
+    }
+  ])
+);

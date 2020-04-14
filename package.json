@@ -114,7 +114,7 @@
     "vscode:prepublish": "yarn build",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "build": "yarn build:webview && yarn build:extension",
-    "build:webview": "./scripts/build-non-split.js",
+    "build:webview": "node ./scripts/build-non-split.js",
     "build:extension": "webpack -p",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
@@ -129,6 +129,7 @@
     "@types/react-dom": "^16.0.5",
     "@types/react-transition-group": "2.0.15",
     "@types/relay-config": "^6.0.0",
+    "copy-webpack-plugin": "^5.1.1",
     "react-scripts": "^2.1.3",
     "rewire": "^4.0.1",
     "terser": "3.14.1",
