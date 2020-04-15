@@ -372,11 +372,7 @@ function App() {
               </GraphiQL>
             </>
           ) : state.show === "voyager" ? (
-            <Voyager
-              introspection={() =>
-                Promise.resolve({ data: introspectionFromSchema(state.schema) })
-              }
-            />
+            <Voyager introspection={{ data: introspectionFromSchema(state.schema) }} />
           ) : null}
         </div>
       ) : (
