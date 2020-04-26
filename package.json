@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "graphiql": "^0.17.5",
-    "graphiql-explorer": "0.5.1",
+    "graphiql-explorer": "^0.6.2",
     "graphql": "^14.5.8",
     "graphql-config": "2.2.1",
     "locate-character": "^2.0.5",
