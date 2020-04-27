@@ -12,6 +12,9 @@
   },
   "publisher": "GabrielNordeborn",
   "activationEvents": [
+    "workspaceContains:/**/relay.config.js",
+    "workspaceContains:/**/.graphqlconfig",
+    "workspaceContains:/**/.graphqlrc*",
     "onCommand:vscode-graphiql-explorer.edit",
     "onCommand:vscode-graphiql-explorer.show",
     "onCommand:vscode-graphiql-explorer.insert",

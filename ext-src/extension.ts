@@ -5,17 +5,60 @@ import * as vscode from "vscode";
 import { loadSchema } from "./loadSchema";
 import {
   replaceTargetSource,
-  extractSelectedOperation
+  extractSelectedOperation,
 } from "./extensionUtils";
 import { prettify, restoreOperationPadding } from "../src/utils";
 import {
   RawSchema,
   StartEditConfig,
   GraphQLSource,
-  Command
+  Command,
 } from "./extensionTypes";
+import { CodeAction } from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
+  vscode.languages.registerCodeActionsProvider(
+    [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "vue",
+      "reason",
+    ],
+    {
+      async provideCodeActions(
+        document,
+        range: vscode.Selection | vscode.Range
+      ): Promise<(vscode.CodeAction | vscode.Command)[] | undefined> {
+        const currentOperation = extractSelectedOperation(
+          document.languageId,
+          document.getText(),
+          {
+            line: range.start.line,
+            character: range.start.character,
+          }
+        );
+
+        if (currentOperation && currentOperation.type === "TAG") {
+          const action = new vscode.CodeAction(
+            "Edit GraphQL code in GraphiQL Explorer",
+            vscode.CodeActionKind.RefactorRewrite
+          );
+
+          action.command = {
+            title: "Edit GraphQL code in GraphiQL Explorer",
+            command: "vscode-graphiql-explorer.edit",
+          };
+
+          return [action];
+        }
+
+        return [];
+      },
+    }
+  );
+
   const loadSchemaAndLaunch = async (
     config: Command,
     textEditor: vscode.TextEditor
@@ -78,9 +121,13 @@ export function activate(context: vscode.ExtensionContext) {
         loadSchemaAndLaunch(
           {
             type: "startEditing",
-            source: selectedOperation
+            source: selectedOperation,
           },
           textEditor
+        );
+      } else {
+        vscode.window.showWarningMessage(
+          "Oops, you don't seem to have your cursor in a valid operation. Make sure that you have your cursor inside a valid GraphQL tag with an operation in it."
         );
       }
     }),
@@ -139,8 +186,8 @@ export function activate(context: vscode.ExtensionContext) {
           type: "insert",
           position: {
             line: selection.line,
-            character: selection.character
-          }
+            character: selection.character,
+          },
         },
         textEditor
       );
@@ -223,8 +270,8 @@ class GraphiQLExplorerPanel {
       {
         enableScripts: true,
         localResourceRoots: [
-          vscode.Uri.file(path.join(this._extensionPath, "build"))
-        ]
+          vscode.Uri.file(path.join(this._extensionPath, "build")),
+        ],
       }
     );
 
@@ -232,7 +279,7 @@ class GraphiQLExplorerPanel {
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
     this._panel.webview.onDidReceiveMessage(
-      message => {
+      (message) => {
         const dispose = () => {
           this._currentTextDocument = null;
           this.dispose();
@@ -301,7 +348,7 @@ class GraphiQLExplorerPanel {
 
     this._panel.webview.postMessage({
       command: config.type,
-      data: { config, schema }
+      data: { config, schema },
     });
   }
 
@@ -350,7 +397,7 @@ class GraphiQLExplorerPanel {
 				<link rel="stylesheet" type="text/css" href="${styleUri}">
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https:; script-src 'nonce-${nonce}';style-src vscode-resource: 'unsafe-inline' http: https: data:;">
 				<base href="${vscode.Uri.file(path.join(this._extensionPath, "build")).with({
-          scheme: "vscode-resource"
+          scheme: "vscode-resource",
         })}/">
 			</head>
 			
