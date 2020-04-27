@@ -348,12 +348,29 @@ function App() {
           </GraphiQL>
         </div>
       ) : (
-        <span>
-          Loading... (this might take a while if your schema is large)
-        </span>
+        <div style={{ fontSize: "20px", padding: "20px" }}>
+          Loading...
+          <div style={{ marginTop: "20px" }}>
+            <RenderAfterDelay content="This might take a while with large schemas... A tip is to make sure your schema is in the SDL format and not JSON. That'll speed things up." />
+          </div>
+        </div>
       )}
     </div>
   );
+}
+
+function RenderAfterDelay({ content }: { content: string }) {
+  const [shouldRender, setShouldRender] = React.useState(false);
+
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShouldRender(true);
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [content]);
+
+  return shouldRender ? <div>{content}</div> : null;
 }
 
 export default App;
