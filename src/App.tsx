@@ -8,6 +8,8 @@ import GraphiQLExplorer from "graphiql-explorer";
 import StorageAPI from "graphiql/dist/utility/StorageAPI";
 import "graphiql/graphiql.css";
 import "./App.css";
+import "graphql-voyager/dist/voyager.css";
+import { Voyager } from "graphql-voyager";
 
 import { MessageHandler } from "./MessageHandler";
 import {
@@ -23,7 +25,8 @@ import {
   buildSchema,
   GraphQLSchema,
   buildClientSchema,
-  IntrospectionQuery
+  IntrospectionQuery,
+  introspectionFromSchema
 } from "graphql";
 import prettier from "prettier/standalone";
 import parserGraphql from "prettier/parser-graphql";
@@ -40,6 +43,8 @@ class Storage {
 
 let storage = new Storage();
 
+type Show = "graphiql" | "voyager";
+
 type State = {
   command: Command | null;
   error: Error | null;
@@ -47,11 +52,13 @@ type State = {
   currentOperation: string | null;
   initialOperation: string | null;
   targetSource: GraphQLSource | null;
+  show: Show;
 };
 
 type Action =
   | { type: "reset" }
-  | { type: "setShow"; command: ShowConfig; schema: GraphQLSchema }
+  | { type: "setShowCommand"; command: ShowConfig; schema: GraphQLSchema }
+  | { type: "setShowType"; show: Show }
   | { type: "setInsert"; command: InsertConfig; schema: GraphQLSchema }
   | { type: "prettifyOperation" }
   | { type: "setError"; error: Error | null }
@@ -71,7 +78,8 @@ let getEmptyState = (): State => ({
   command: null,
   initialOperation: null,
   currentOperation: null,
-  targetSource: null
+  targetSource: null,
+  show: "graphiql"
 });
 
 function reducer(state: State, action: Action): State {
@@ -104,13 +112,19 @@ function reducer(state: State, action: Action): State {
         schema: action.schema,
         targetSource: action.targetSource,
         initialOperation: action.initialOperation,
-        currentOperation: prettify(action.initialOperation)
+        currentOperation: prettify(action.initialOperation),
+        show: "graphiql"
       };
-    case "setShow":
+    case "setShowCommand":
       return {
         ...getEmptyState(),
         command: action.command,
         schema: action.schema
+      };
+    case "setShowType":
+      return {
+        ...state,
+        show: action.show
       };
     case "setInsert":
       return {
@@ -170,7 +184,7 @@ function App() {
         const processed = parseSchema(schema);
 
         dispatch({
-          type: "setShow",
+          type: "setShowCommand",
           command: config,
           schema: processed
         });
@@ -312,40 +326,54 @@ function App() {
       {state.error ? <p>{state.error.message}</p> : null}
       {state.schema && command ? (
         <div className="graphiql-container">
-          <GraphiQLExplorer
-            schema={state.schema}
-            query={state.currentOperation}
-            onEdit={onEditExplorer}
-            explorerIsOpen={true}
-            showAttribution={true}
-          />
-          <GraphiQL
-            schema={state.schema}
-            query={state.currentOperation}
-            onEditQuery={onEdit}
-            storage={storage}
-            fetcher={() => Promise.resolve({ data: null })}
-          >
-            <GraphiQL.Toolbar>
-              <GraphiQL.Button
-                onClick={() => dispatch({ type: "prettifyOperation" })}
-                label="Prettify"
-                title="Prettify"
+          {state.show === "graphiql" ? (
+            <>
+              <GraphiQLExplorer
+                schema={state.schema}
+                query={state.currentOperation}
+                onEdit={onEditExplorer}
+                explorerIsOpen={true}
+                showAttribution={true}
               />
-              {command.type === "show" ? null : (
-                <GraphiQL.Button
-                  onClick={save}
-                  label="Save (Cmd/Ctrl + Enter)"
-                  title="Save (Cmd/Ctrl + Enter)"
-                />
-              )}
-              <GraphiQL.Button
-                onClick={cancel}
-                label={command.type === "show" ? "Close" : "Cancel (Esc)"}
-                title={command.type === "show" ? "Close" : "Cancel (Esc)"}
-              />
-            </GraphiQL.Toolbar>
-          </GraphiQL>
+              <GraphiQL
+                schema={state.schema}
+                query={state.currentOperation}
+                onEditQuery={onEdit}
+                storage={storage}
+                fetcher={() => Promise.resolve({ data: null })}
+              >
+                <GraphiQL.Toolbar>
+                  <GraphiQL.Button
+                    onClick={() => dispatch({ type: "prettifyOperation" })}
+                    label="Prettify"
+                    title="Prettify"
+                  />
+                  {command.type === "show" ? (
+                    <GraphiQL.Button
+                      onClick={() =>
+                        dispatch({ type: "setShowType", show: "voyager" })
+                      }
+                      label="Explore Graph"
+                      title="Explore Graph"
+                    />
+                  ) : (
+                    <GraphiQL.Button
+                      onClick={save}
+                      label="Save (Cmd/Ctrl + Enter)"
+                      title="Save (Cmd/Ctrl + Enter)"
+                    />
+                  )}
+                  <GraphiQL.Button
+                    onClick={cancel}
+                    label={command.type === "show" ? "Close" : "Cancel (Esc)"}
+                    title={command.type === "show" ? "Close" : "Cancel (Esc)"}
+                  />
+                </GraphiQL.Toolbar>
+              </GraphiQL>
+            </>
+          ) : state.show === "voyager" ? (
+            <Voyager introspection={{ data: introspectionFromSchema(state.schema) }} />
+          ) : null}
         </div>
       ) : (
         <span>Loading...</span>
