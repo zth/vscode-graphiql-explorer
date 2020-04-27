@@ -41,17 +41,33 @@ export function activate(context: vscode.ExtensionContext) {
         );
 
         if (currentOperation && currentOperation.type === "TAG") {
-          const action = new vscode.CodeAction(
+          const editAction = new vscode.CodeAction(
             "Edit GraphQL code in GraphiQL Explorer",
             vscode.CodeActionKind.RefactorRewrite
           );
 
-          action.command = {
+          editAction.command = {
             title: "Edit GraphQL code in GraphiQL Explorer",
             command: "vscode-graphiql-explorer.edit",
           };
 
-          return [action];
+          const actions = [editAction];
+
+          if (document.languageId === "reason") {
+            const formatAction = new vscode.CodeAction(
+              "Format GraphQL code",
+              vscode.CodeActionKind.RefactorRewrite
+            );
+
+            formatAction.command = {
+              title: "Format GraphQL code with prettier",
+              command: "vscode-graphiql-explorer.format",
+            };
+
+            actions.push(formatAction);
+          }
+
+          return actions;
         }
 
         return [];
