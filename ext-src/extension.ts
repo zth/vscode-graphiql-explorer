@@ -16,6 +16,12 @@ import {
 } from "./extensionTypes";
 import { CodeAction } from "vscode";
 
+export function getCurrentWorkspaceRoot(): string | undefined {
+  if (vscode.workspace.workspaceFolders) {
+    return vscode.workspace.workspaceFolders[0].uri.fsPath;
+  }
+}
+
 export function activate(context: vscode.ExtensionContext) {
   vscode.languages.registerCodeActionsProvider(
     [
@@ -80,11 +86,13 @@ export function activate(context: vscode.ExtensionContext) {
     textEditor: vscode.TextEditor
   ) => {
     try {
-      if (!vscode.workspace.rootPath) {
-        throw new Error("Missing rootPath");
+      const workspaceRoot = getCurrentWorkspaceRoot();
+
+      if (!workspaceRoot) {
+        throw new Error("Not in a workspace.");
       }
 
-      const schema = await loadSchema(vscode.workspace.rootPath);
+      const schema = await loadSchema(workspaceRoot);
 
       if (!schema) {
         vscode.window.showErrorMessage(

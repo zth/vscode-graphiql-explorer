@@ -23,6 +23,8 @@ Use [GraphiQL](https://github.com/graphql/graphiql) + [OneGraph's](https://www.o
 
 If your schema is located somewhere other than the workspace root, please add and configure a `.graphqlconfig` file pointing to the schema as described above.
 
+> **For large schemas, please prefer providing your schema in the SDL format (`.graphql`) rather than JSON**. That will make opening GraphiQL significantly faster.
+
 If you don't have a schema file, you can create one by running `npx get-graphql-schema http://url/to/your/graphql/endpoint > schema.graphql` in your project root.
 
 ## Usage

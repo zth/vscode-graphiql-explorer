@@ -1,7 +1,6 @@
-import { RawSchema, SchemaLoader } from "./extensionTypes";
+import { RawSchema } from "./extensionTypes";
 import { loaders } from "./schemaLoaders";
 import * as fs from "fs";
-import { getGraphQLConfig } from "graphql-config";
 
 export async function loadSchema(rootPath: string): Promise<RawSchema | null> {
   const filesInRoot = fs.readdirSync(rootPath);

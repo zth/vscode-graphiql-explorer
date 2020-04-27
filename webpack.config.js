@@ -8,16 +8,16 @@ const config = {
   output: {
     path: path.resolve(__dirname, "build", "ext-src"),
     filename: "extension.js",
-    libraryTarget: "commonjs2"
+    libraryTarget: "commonjs2",
   },
   devtool: "source-map",
   externals: {
     vscode: "commonjs vscode",
     encoding: "encoding",
-    "import-fresh": "import-fresh"
+    "import-fresh": "import-fresh",
   },
   resolve: {
-    extensions: [".mjs", ".js", ".ts"]
+    extensions: [".mjs", ".js", ".ts"],
   },
   module: {
     rules: [
@@ -30,14 +30,14 @@ const config = {
             options: {
               configFile: require.resolve("./tsconfig.extension.json"),
               compilerOptions: {
-                module: "es6"
-              }
-            }
-          }
-        ]
-      }
-    ]
-  }
+                module: "es6",
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
 };
 
 module.exports = config;

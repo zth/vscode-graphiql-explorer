@@ -16,14 +16,14 @@ import {
   Command,
   RawSchema,
   InsertConfig,
-  ShowConfig
+  ShowConfig,
 } from "../ext-src/extensionTypes";
 import { restoreOperationPadding, prettify } from "./utils";
 import {
   buildSchema,
   GraphQLSchema,
   buildClientSchema,
-  IntrospectionQuery
+  IntrospectionQuery,
 } from "graphql";
 import prettier from "prettier/standalone";
 import parserGraphql from "prettier/parser-graphql";
@@ -71,7 +71,7 @@ let getEmptyState = (): State => ({
   command: null,
   initialOperation: null,
   currentOperation: null,
-  targetSource: null
+  targetSource: null,
 });
 
 function reducer(state: State, action: Action): State {
@@ -85,17 +85,17 @@ function reducer(state: State, action: Action): State {
         ...state,
         currentOperation: state.currentOperation
           ? prettify(state.currentOperation)
-          : state.currentOperation
+          : state.currentOperation,
       };
     case "setOperation":
       return {
         ...state,
-        currentOperation: action.operation
+        currentOperation: action.operation,
       };
     case "setOperationFromExplorer":
       return {
         ...state,
-        currentOperation: prettify(action.operation)
+        currentOperation: prettify(action.operation),
       };
     case "setFromStartEvent":
       return {
@@ -104,19 +104,19 @@ function reducer(state: State, action: Action): State {
         schema: action.schema,
         targetSource: action.targetSource,
         initialOperation: action.initialOperation,
-        currentOperation: prettify(action.initialOperation)
+        currentOperation: prettify(action.initialOperation),
       };
     case "setShow":
       return {
         ...getEmptyState(),
         command: action.command,
-        schema: action.schema
+        schema: action.schema,
       };
     case "setInsert":
       return {
         ...getEmptyState(),
         command: action.command,
-        schema: action.schema
+        schema: action.schema,
       };
   }
 }
@@ -152,12 +152,12 @@ function App() {
           schema: processed,
           command: config,
           initialOperation: config.source.content,
-          targetSource: config.source
+          targetSource: config.source,
         });
       } catch (e) {
         dispatch({
           type: "setError",
-          error: e
+          error: e,
         });
       }
     },
@@ -172,12 +172,12 @@ function App() {
         dispatch({
           type: "setShow",
           command: config,
-          schema: processed
+          schema: processed,
         });
       } catch (e) {
         dispatch({
           type: "setError",
-          error: e
+          error: e,
         });
       }
     },
@@ -192,12 +192,12 @@ function App() {
         dispatch({
           type: "setInsert",
           command: config,
-          schema: processed
+          schema: processed,
         });
       } catch (e) {
         dispatch({
           type: "setError",
-          error: e
+          error: e,
         });
       }
     },
@@ -236,7 +236,7 @@ function App() {
         vscode.postMessage({
           command: "insert",
           position: command.position,
-          content: state.currentOperation
+          content: state.currentOperation,
         });
         break;
       }
@@ -255,7 +255,7 @@ function App() {
                     prettify(currentOperation),
                     initialOperation
                   )
-                : currentOperation
+                : currentOperation,
           });
         }
       }
@@ -264,7 +264,7 @@ function App() {
 
   let cancel = () =>
     vscode.postMessage({
-      command: "cancel"
+      command: "cancel",
     });
 
   React.useEffect(() => {
@@ -348,7 +348,9 @@ function App() {
           </GraphiQL>
         </div>
       ) : (
-        <span>Loading...</span>
+        <span>
+          Loading... (this might take a while if your schema is large)
+        </span>
       )}
     </div>
   );

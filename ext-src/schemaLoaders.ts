@@ -1,6 +1,7 @@
-import { RawSchema, SchemaLoader } from "./extensionTypes";
+import { SchemaLoader } from "./extensionTypes";
 import * as fs from "fs";
 import * as path from "path";
+import * as vscode from "vscode";
 import { getGraphQLConfig } from "graphql-config";
 
 const getSchemaType = (schemaPath: string): "json" | "sdl" | null => {
@@ -21,7 +22,7 @@ export const graphql_ppx_loader: SchemaLoader = async (
   rootPath: string,
   filesInRoot: Array<string>
 ) => {
-  const schemaFile = filesInRoot.find(f => f === "graphql_schema.json");
+  const schemaFile = filesInRoot.find((f) => f === "graphql_schema.json");
 
   if (!schemaFile) {
     return null;
@@ -29,7 +30,7 @@ export const graphql_ppx_loader: SchemaLoader = async (
 
   return {
     type: "json",
-    content: fs.readFileSync(path.join(rootPath, schemaFile), "utf8")
+    content: fs.readFileSync(path.join(rootPath, schemaFile), "utf8"),
   };
 };
 
@@ -38,7 +39,7 @@ export const rawSchemaFileLoader: SchemaLoader = async (
   filesInRoot: Array<string>
 ) => {
   const schemaFile = filesInRoot.find(
-    f => f === "schema.graphql" || f === "schema.json"
+    (f) => f === "schema.graphql" || f === "schema.json"
   );
 
   if (!schemaFile) {
@@ -50,31 +51,35 @@ export const rawSchemaFileLoader: SchemaLoader = async (
   return schemaType
     ? {
         type: schemaType,
-        content: fs.readFileSync(path.join(rootPath, schemaFile), "utf8")
+        content: fs.readFileSync(path.join(rootPath, schemaFile), "utf8"),
       }
     : null;
 };
 
-const graphqlConfigLoader: SchemaLoader = async (
-  rootPath: string,
-  filesInRoot: Array<string>
-) => {
+const graphqlConfigLoader: SchemaLoader = async (rootPath: string) => {
   try {
-    const schemaPath = getGraphQLConfig(rootPath).getProjectConfig().schemaPath;
+    const config = await getGraphQLConfig(rootPath);
 
-    if (!schemaPath) {
+    if (!config) {
+      return null;
+    }
+
+    const schemaPath = config.getProjectConfig().schemaPath;
+
+    if (typeof schemaPath !== "string") {
       return null;
     }
 
     const schemaType = getSchemaType(schemaPath);
 
     if (!schemaType) {
+      vscode.window.showInformationMessage("No type");
       return null;
     }
 
     return {
       content: fs.readFileSync(schemaPath, "utf8"),
-      type: schemaType
+      type: schemaType,
     };
   } catch {
     return null;
@@ -84,5 +89,5 @@ const graphqlConfigLoader: SchemaLoader = async (
 export const loaders: Array<SchemaLoader> = [
   graphqlConfigLoader,
   graphql_ppx_loader,
-  rawSchemaFileLoader
+  rawSchemaFileLoader,
 ];
