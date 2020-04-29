@@ -18,8 +18,8 @@ Use [GraphiQL](https://github.com/graphql/graphiql) + [OneGraph's](https://www.o
 
 `vscode-graphiql-explorer` needs your introspected schema, either in a `.json` or a `.graphql` file. It tries to find your schema by looking in the workspace root for:
 
-1. A `.graphqlconfig` file containing `schemaPath` pointing to your schema, like `{ "schemaPath": "/path/to/schema.graphql" }`.
-2. `schema.graphql`, `schema.json` or `graphql_schema.json`.
+1. `schema.graphql`, `schema.json` or `graphql_schema.json`.
+2. A `.graphqlconfig` file containing `schemaPath` pointing to your schema, like `{ "schemaPath": "/path/to/schema.graphql" }`.
 
 If your schema is located somewhere other than the workspace root, please add and configure a `.graphqlconfig` file pointing to the schema as described above.
 
@@ -39,4 +39,4 @@ In addition to that, the extension adds 3 commands:
 
 ## Contributing
 
-_Coming soon_.
+Is your favorite language/framework not supported? Check out [this link](https://github.com/zth/vscode-graphiql-explorer/issues/7#issuecomment-582071568) for instructions on how to PR support.
